@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
+
 namespace Alura.Loja.Testes.ConsoleApp
 {
-    internal class ProdutoDAO : IDisposable
+    internal class ProdutoDAO : IDisposable, IProdutoDAO
     {
         private SqlConnection conexao;
+        //private IDbConnection conexao;
 
         public ProdutoDAO()
         {
@@ -20,30 +22,34 @@ namespace Alura.Loja.Testes.ConsoleApp
             this.conexao.Close();
         }
 
-        internal void Adicionar(Produto p)
+        public void Adicionar(params Produto[] p)
         {
             try
             {
-                var insertCmd = conexao.CreateCommand();
-                insertCmd.CommandText = "INSERT INTO Produtos (Nome, Categoria, Preco) VALUES (@nome, @categoria, @preco)";
+                for (int i = 0; i < p.Length; i++)
+                {
+                    var insertCmd = conexao.CreateCommand();
+                    insertCmd.CommandText = "INSERT INTO Produtos (Nome, Categoria, Preco) VALUES (@nome, @categoria, @preco)";
 
-                var paramNome = new SqlParameter("nome", p.Nome);
-                insertCmd.Parameters.Add(paramNome);
+                    var paramNome = new SqlParameter("nome", p[i].Nome);
+                    insertCmd.Parameters.Add(paramNome);
 
-                var paramCategoria = new SqlParameter("categoria", p.Categoria);
-                insertCmd.Parameters.Add(paramCategoria);
+                    var paramCategoria = new SqlParameter("categoria", p[i].Categoria);
+                    insertCmd.Parameters.Add(paramCategoria);
 
-                var paramPreco = new SqlParameter("preco", p.Preco);
-                insertCmd.Parameters.Add(paramPreco);
+                    var paramPreco = new SqlParameter("preco", p[i].Preco);
+                    insertCmd.Parameters.Add(paramPreco);
 
-                insertCmd.ExecuteNonQuery();
+                    insertCmd.ExecuteNonQuery();
+                }
+                
             } catch (SqlException e)
             {
                 throw new SystemException(e.Message, e);
             }
         }
 
-        internal void Atualizar(Produto p)
+        public void Atualizar(Produto p)
         {
             try
             {
@@ -67,7 +73,7 @@ namespace Alura.Loja.Testes.ConsoleApp
             }
         }
 
-        internal void Remover(Produto p)
+        public void Remover(Produto p)
         {
             try
             {
@@ -85,7 +91,7 @@ namespace Alura.Loja.Testes.ConsoleApp
             }
         }
 
-        internal IList<Produto> Produtos()
+        public List<Produto> Produtos()
         {
             var lista = new List<Produto>();
 
