@@ -26,17 +26,25 @@ namespace Alura.Loja.Testes.ConsoleApp
                 ExibeEntries(contexto.ChangeTracker.Entries());
 
                 var produto1 = new Produto();
-                produto1.Nome = "A nuvem da morte";
+                produto1.Nome = "Torre negra";
                 produto1.Categoria = "Livro";
-                produto1.Preco = 40.00;
+                produto1.Preco = 20.00;
 
+                ExibeEntries(contexto.ChangeTracker.Entries());
                 contexto.Produtos.Add(produto1);
-
                 ExibeEntries(contexto.ChangeTracker.Entries());
 
-                contexto.SaveChanges();
+                contexto.Produtos.Remove(produto1);
+                var entry = contexto.Entry(produto1);
 
-                ExibeEntries(contexto.ChangeTracker.Entries());
+                Console.WriteLine($"{entry.Entity} - {entry.State}");
+                //contexto.SaveChanges();
+
+                //ExibeEntries(contexto.ChangeTracker.Entries());
+
+                //var p1 = listaProdutos.First();
+                //contexto.Produtos.Remove(p1);
+
             }
             Console.ReadKey();
         }
@@ -46,12 +54,10 @@ namespace Alura.Loja.Testes.ConsoleApp
             Console.WriteLine("============================================");
             foreach (var item in contexto)
             {
-                Console.WriteLine(item.State);
-                Console.WriteLine(item.Entity.ToString());
+                Console.WriteLine($"{item.Entity} = {item.State}");
+                
             }
         }
-
-
         #region Testes Parte 1
         //private static void GravarUsandoEntity()
         //{
@@ -181,4 +187,3 @@ namespace Alura.Loja.Testes.ConsoleApp
         #endregion
     }
 }
-
